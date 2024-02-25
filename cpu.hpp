@@ -21,12 +21,24 @@ class CPU  {
     Byte P : 1; // Parity flag
     Byte C : 1; // Carry flag
 
-    /** To Be Implemented **/
-    /* Signals */
-    Word ResetIn : 1; // RESET CPU signal
-    Word ResetOut : 1; // RESET acknowledge - Output
-    Word HOLD : 1; // HOLD request 
-    Word HLDA : 1; // HOLD acknowledge - Output
+    /* Control Signals */
+    Byte READY : 1; // Peripheral data transfer => Ready = 1
+    Byte RD_ : 1; // Read operation => Read = 0
+    Byte WR_ : 1; // Write operation => Write = 0
+    Byte ALE : 1; // Address Latch Enabled => Data bus = 0, Address bus = 1
+
+    /* Status Signals */
+    Byte S0 : 1; // General status signal
+    Byte S1 : 1; // General status signal
+    Byte IO_M_ : 1; // I/0 - Memory signal => Memory = 0, I/O = 1
+    
+    /* DMA Signals */
+    Byte HOLD : 1; // HOLD request 
+    Byte HLDA : 1; // HOLD acknowledge - Output
+
+    /* Reset Signals */
+    Byte ResetIn : 1; // RESET CPU signal
+    Byte ResetOut : 1; // RESET acknowledge - Output
 
     /* Interrupts */
     Word INTR : 1; // Interrupt request - Least priority
@@ -34,8 +46,7 @@ class CPU  {
     Word RST5_5 : 1; // 002C
     Word RST6_5 : 1; // 0034
     Word RST7_5 : 1; // 003C
-    Word TRAP : 1; // 	0024
-    /** To Be Implemented **/
+    Word TRAP : 1; // 0024
 
     /* Opcodes */
     static constexpr Byte INS_LDA_IMM = 0x3A; // Load Accumulator Immediate
