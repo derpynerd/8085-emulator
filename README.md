@@ -2,7 +2,7 @@
 Emulating an 8085 processor in C++
 
 ## Specifications - 
-- 64KB of memory (1024 * 64 * 8 bits)
+- 64KB of stack memory (1024 * 64 * 8 bits)
 
 ## Functional Overview -
 - Reset operation
@@ -20,7 +20,10 @@ Emulating an 8085 processor in C++
 - `LDA (Address)` [Load Accumulator Immediate] -
     - Fetches value to be loaded into `A` from `Memory[PC]`
     - Loads value into `A`
-    - Sets `Z` & `S` flags according to value in `A`
+    - Set status flags accordingly
+- `INR A` -
+    - Increment `A` by `1`
+    - Set status flags accordingly
 
 ## Abbreviations - 
 - PC - Program Counter
