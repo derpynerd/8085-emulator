@@ -19,7 +19,7 @@ class CPU  {
     Byte Z : 1; // Zero flag
     Byte AC : 1; // Auxiliary Carry flag
     Byte P : 1; // Parity flag
-    Byte C : 1; // Carry flag
+    Byte CY : 1; // Carry flag
 
     /* Control Signals */
     Byte READY : 1; // Peripheral data transfer => Ready = 1
@@ -37,19 +37,26 @@ class CPU  {
     Byte HLDA : 1; // HOLD acknowledge - Output
 
     /* Reset Signals */
-    Byte ResetIn : 1; // RESET CPU signal
-    Byte ResetOut : 1; // RESET acknowledge - Output
+    Byte RESET_IN_ : 1; // RESET CPU  
+    Byte RESET_OUT : 1; // RESET acknowledge - Output
 
     /* Interrupts */
     Word INTR : 1; // Interrupt request - Least priority
-    Word INTA : 1; // Interrupt acknowledge - Output
+    Word INTA_ : 1; // Interrupt acknowledge - Output
     Word RST5_5 : 1; // 002C
     Word RST6_5 : 1; // 0034
     Word RST7_5 : 1; // 003C
     Word TRAP : 1; // 0024
 
+    /* I/O */
+    Byte SID : 1; // Serial input
+    Byte S0D : 1; // Serial output
+    Word AD_0_7 : 8; // Input address bus AD0 - AD7
+    Word AD_8_15 : 8; // Input address bus AD8 - AD15 
+
     /* Opcodes */
     static constexpr Byte INS_LDA_IMM = 0x3A; // Load Accumulator Immediate
+    static constexpr Byte INS_INR_A = 0x3C; // Increment Accumulator
 
     public:
     /* Reset routine */
@@ -58,7 +65,7 @@ class CPU  {
         IR = 0x00; // Default reset routine
         SP = 0x0100; // Starting stack from random memory location
         
-        S = Z = AC = P = C = 0; // Resetting all flags 
+        S = Z = AC = P = CY = 0; // Resetting all flags 
         A = 0; // Resetting Accumulator
 
         memory.Initialize(); // Initializing all memory bits to 0
@@ -72,6 +79,11 @@ class CPU  {
         return Data;
     }
 
+    void AccumulatorSetFlags() {
+        Z = (A == 0); // Set Zero flag if A == 0
+        S = (A & 0b10000000) > 0; // Set Sign flag if 8th bit of A is 1 i.e. A is negative
+    }
+
     /* Fetch -> Decode -> Execute procedure */
     void Execute( u32 cycles, Memory& memory ) {
         while (cycles > 0) {
@@ -81,8 +93,12 @@ class CPU  {
                 {
                     Byte Value = FetchByte( cycles, memory ); // Fetch value to load into Accumulator
                     A = Value; 
-                    Z = (A == 0); // Set Zero flag if A == 0
-                    S = (A & 0b10000000) > 0; // Set Sign flag if 8th bit of A is 1 i.e. A is negative
+                    AccumulatorSetFlags();
+                } break;
+                case INS_INR_A:
+                {
+                    A += 0b00000001; // Increment Accumulator by 1
+                    AccumulatorSetFlags();
                 } break;
                 default:
                     throw InvalidOpcode();
