@@ -2,7 +2,7 @@
 #include "memory.hpp"
 #pragma once
 
-class CPU  {
+class CPU {
 
     /* Internal Registers */
     Word SP; // Stack pointer
@@ -54,10 +54,6 @@ class CPU  {
     Word AD_0_7 : 8; // Input address bus AD0 - AD7
     Word AD_8_15 : 8; // Input address bus AD8 - AD15 
 
-    /* Opcodes */
-    static constexpr Byte INS_LDA_IMM = 0x3A; // Load Accumulator Immediate
-    static constexpr Byte INS_INR_A = 0x3C; // Increment Accumulator
-
     public:
     /* Reset routine */
     void Reset( Memory& memory ) {
@@ -71,7 +67,7 @@ class CPU  {
         memory.Initialize(); // Initializing all memory bits to 0
     }
 
-    /* Fetch one byte from current location of Program Counter */
+    /* Fetch one Byte from PC */
     Byte FetchByte( u32& cycles, Memory& memory ) {
         Byte Data = memory[PC];
         PC++;
@@ -79,9 +75,23 @@ class CPU  {
         return Data;
     }
 
+    /* Fetch one Word from PC, PC + 1 */
+    Word FetchWord( u32& cycles, Memory& memory ) {
+        Byte Upper = memory[PC++];
+        Byte Lower = memory[PC++];
+        cycles -= 2;
+        return (((Word)Upper) << 8) | ((Word)Lower);
+    }
+
     void AccumulatorSetFlags() {
         Z = (A == 0); // Set Zero flag if A == 0
         S = (A & 0b10000000) > 0; // Set Sign flag if 8th bit of A is 1 i.e. A is negative
+    }
+
+    /* Check if required number of clock cycles are present to execute instruction */
+    void CheckCycles(u32& cycles, u32 requiredCycles) {
+        if (cycles < requiredCycles) throw OutOfCycles();
+        return;
     }
 
     /* Fetch -> Decode -> Execute procedure */
@@ -89,16 +99,24 @@ class CPU  {
         while (cycles > 0) {
             IR = FetchByte( cycles, memory );
             switch( IR ) {
-                case INS_LDA_IMM:
+                case OPCODE::LDA_IMM:
                 {
+                    CheckCycles( cycles, 1 );
                     Byte Value = FetchByte( cycles, memory ); // Fetch value to load into Accumulator
                     A = Value; 
                     AccumulatorSetFlags();
                 } break;
-                case INS_INR_A:
+                case OPCODE::INR_A:
                 {
+                    CheckCycles( cycles, 1 );
                     A += 0b00000001; // Increment Accumulator by 1
                     AccumulatorSetFlags();
+                } break;
+                case OPCODE::JMP:
+                {   
+                    CheckCycles( cycles, 2 );
+                    Word Address = FetchWord( cycles, memory );
+                    PC = Address;
                 } break;
                 default:
                     throw InvalidOpcode();
