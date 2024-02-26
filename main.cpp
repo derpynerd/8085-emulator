@@ -1,7 +1,7 @@
-#include "constants.hpp"
-#include "exceptions.hpp"
-#include "memory.hpp"
-#include "cpu.hpp"
+#include "include/constants.hpp"
+#include "include/exceptions.hpp"
+#include "include/memory.hpp"
+#include "include/cpu.hpp"
 
 int main() {
 
