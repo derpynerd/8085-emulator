@@ -99,25 +99,32 @@ class CPU {
         while (cycles > 0) {
             IR = FetchByte( cycles, memory );
             switch( IR ) {
-                case OPCODE::LDA_IMM:
+                /* Data Transfer Group */
+                case OPCODE::LDA_ADDR:
                 {
                     CheckCycles( cycles, 1 );
                     Byte Value = FetchByte( cycles, memory ); // Fetch value to load into Accumulator
                     A = Value; 
                     AccumulatorSetFlags();
                 } break;
+                /* Arithmetic Group */
                 case OPCODE::INR_A:
                 {
-                    CheckCycles( cycles, 1 );
+                    // CheckCycles( cycles, 1 ); [No need to fetch location of Accumulator (?)]
                     A += 0b00000001; // Increment Accumulator by 1
                     AccumulatorSetFlags();
                 } break;
+                /* Logical Group */
+
+                /* Branch Group */
                 case OPCODE::JMP:
                 {   
                     CheckCycles( cycles, 2 );
                     Word Address = FetchWord( cycles, memory );
                     PC = Address;
                 } break;
+                /* Stack, I/O and Machine Control Group */
+
                 default:
                     throw InvalidOpcode();
             }
