@@ -10,15 +10,15 @@ int main() {
 
     cpu.Reset( memory ); // RESET CPU to base state
     // start - inline testing program
-
-    memory[0] = OPCODE::JMP;
-    memory[1] = 0x01;
-    memory[2] = 0x3C;
-    memory[0x013C] = OPCODE::INR_A;
+    
+    memory[0] = OPCODE::INR_A;
+    memory[1] = OPCODE::STA_ADDR;
+    memory[2] = 0x05;
+    memory[3] = 0x00;
     
     // end - inline testing program
-    cpu.Execute( 3, memory ); // Execute instruction
-    cpu.Execute( 1, memory );
+    cpu.Execute( 1, memory ); // Execute instruction
+    cpu.Execute( 3, memory );
 
     return 0;
 }

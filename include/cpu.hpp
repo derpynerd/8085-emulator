@@ -69,18 +69,17 @@ class CPU {
 
     /* Fetch one Byte from PC */
     Byte FetchByte( u32& cycles, Memory& memory ) {
-        Byte Data = memory[PC];
-        PC++;
+        Byte Data = memory[PC++];
         cycles--;
         return Data;
     }
 
     /* Fetch one Word from PC, PC + 1 */
     Word FetchWord( u32& cycles, Memory& memory ) {
-        Byte Upper = memory[PC++];
-        Byte Lower = memory[PC++];
+        Byte Low = memory[PC++];
+        Byte High = memory[PC++];
         cycles -= 2;
-        return (((Word)Upper) << 8) | ((Word)Lower);
+        return (((Word)High) << 8) | ((Word)Low);
     }
 
     void AccumulatorSetFlags() {
@@ -102,10 +101,16 @@ class CPU {
                 /* Data Transfer Group */
                 case OPCODE::LDA_ADDR:
                 {
-                    CheckCycles( cycles, 1 );
-                    Byte Value = FetchByte( cycles, memory ); // Fetch value to load into Accumulator
-                    A = Value; 
+                    CheckCycles( cycles, 2 );
+                    Word Address = FetchWord( cycles, memory ); // Fetch value to load into Accumulator
+                    A = memory[Address]; 
                     AccumulatorSetFlags();
+                } break;
+                case OPCODE::STA_ADDR:
+                {
+                    CheckCycles( cycles, 2 );
+                    Word Address = FetchWord( cycles, memory ); // Fetch value to load into Accumulator
+                    memory[Address] = A;
                 } break;
                 /* Arithmetic Group */
                 case OPCODE::INR_A:
