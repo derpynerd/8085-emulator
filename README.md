@@ -13,17 +13,23 @@ Emulating an 8085 processor in C++
 
 ## Opcodes Supported -
 - `RESET` processor (Gets executed on startup) -
-    - Sets initial value for all internal registers
-    - Sets all flags to `0`
-    - Sets value in accumulator to `0`
-    - Initializes all memory bits to `0`
+    - Set initial value for all internal registers
+    - Set all flags to `0`
+    - Set value in accumulator to `0`
+    - Initialize all memory bits to `0`
 - `LDA (Address)` [Load Accumulator Immediate] -
-    - Fetches value to be loaded into `A` from `Memory[PC]`
-    - Loads value into `A`
+    - Fetch value to be loaded into `A` from `Memory[PC]`
+    - Load value into `A`
     - Set status flags accordingly
+- `STA (Address)` [Store Accumulator Immediate] -
+    - Fetch address to be stored in -> pre: loaded in `Memory[PC]` + `Memory[PC+1]`
+    - Set value of `Memory[Address]` to current value of `A`
 - `INR A` -
     - Increment `A` by `1`
     - Set status flags accordingly
+- `JMP` [Unconditional Jump] -
+    - Fetch address to jump to -> pre: loaded in `Memory[PC]` + `Memory[PC+1]`
+    - Jump to given address (`PC` = `Address`)
 
 ## Abbreviations - 
 - PC - Program Counter
@@ -32,3 +38,9 @@ Emulating an 8085 processor in C++
 - A - Accumulator
 - Z - Zero flag
 - S - Sign flag
+
+## Future Plans -
+- Opcode decoder which can read opcodes from a text file and execute them
+- Adding on to above point, syntax checker - proper compiler/interpreter perhaps (?)
+- Plan: what to do about the clock cycle parameter ? 
+- Fix: unable to print memory[Addr] values
