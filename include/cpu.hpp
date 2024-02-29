@@ -12,7 +12,8 @@ class CPU {
     /* Registers */
     Byte A; // Accumulator
     Word WZ; // Temporary registers
-    Word BC, DE, HL; // Registers
+    Word BC, DE; // Registers
+    Byte H, L;
 
     /* Flag register */
     Byte S : 1; // Sign flag 
@@ -109,8 +110,24 @@ class CPU {
                 case OPCODE::STA_ADDR:
                 {
                     CheckCycles( cycles, 2 );
-                    Word Address = FetchWord( cycles, memory ); // Fetch value to load into Accumulator
+                    Word Address = FetchWord( cycles, memory ); // Fetch address to store value in
                     memory[Address] = A;
+                } break;
+                case OPCODE::LHLD_ADDR:
+                {
+                    CheckCycles( cycles, 2 );
+                    Word Address = FetchWord( cycles, memory );
+                    L = memory[Address]; // L set to lower address value
+                    H = memory[Address + 1]; // H set to higher address value
+                } break;
+                case OPCODE::SHLD_ADDR:
+                {
+                    H = 2;
+                    L = 5;
+                    CheckCycles( cycles, 2 );
+                    Word Address = FetchWord( cycles, memory ); // Fetch address to store value in
+                    memory[Address] = H; // Lower address value gets set to value of H
+                    memory[Address + 1] = L; // Higher address value gets set to value of L
                 } break;
                 /* Arithmetic Group */
                 case OPCODE::INR_A:
