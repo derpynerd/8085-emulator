@@ -122,8 +122,6 @@ class CPU {
                 } break;
                 case OPCODE::SHLD_ADDR:
                 {
-                    H = 2;
-                    L = 5;
                     CheckCycles( cycles, 2 );
                     Word Address = FetchWord( cycles, memory ); // Fetch address to store value in
                     memory[Address] = H; // Lower address value gets set to value of H

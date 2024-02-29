@@ -23,7 +23,15 @@ Emulating an 8085 processor in C++
     - Set status flags accordingly
 - `STA (Address)` [Store Accumulator Immediate] -
     - Fetch address to be stored in -> pre: loaded in `Memory[PC]` + `Memory[PC+1]`
-    - Set value of `Memory[Address]` to current value of `A`
+    - Set value of `Memory[Address]` to value of `A`
+- `LHLD (Address)` [Load HL Pair Immediate] -
+    - Fetch address to load from `Memory[PC]`
+    - Load value from `Memory[PC]` into `H`
+    - Load value from `Memory[PC+1]` into `L`
+- `SHLD (Address)` [Store HL Pair Immediate] -
+    - Fetch address to store into -> pre: loaded in `Memory[PC]` & `Memory[PC+1]`
+    - Set value of `Memory[PC]` to value of `H`
+    - Set value of `Memory[PC+1]` to value of `L`
 - `INR A` -
     - Increment `A` by `1`
     - Set status flags accordingly
