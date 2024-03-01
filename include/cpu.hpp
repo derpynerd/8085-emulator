@@ -128,7 +128,7 @@ class CPU {
                     memory[Address + 1] = L; // Higher address value gets set to value of L
                 } break;
                 /* Arithmetic Group */
-                case OPCODE::INR_A:
+                case OPCODE::INR_R:
                 {
                     // CheckCycles( cycles, 1 ); [No need to fetch location of Accumulator (?)]
                     A += 0b00000001; // Increment Accumulator by 1
@@ -137,7 +137,7 @@ class CPU {
                 /* Logical Group */
 
                 /* Branch Group */
-                case OPCODE::JMP:
+                case OPCODE::JMP_ADDR:
                 {   
                     CheckCycles( cycles, 2 );
                     Word Address = FetchWord( cycles, memory );
