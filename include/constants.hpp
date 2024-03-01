@@ -17,7 +17,7 @@ public:
     static constexpr Byte DCR_B = 0x05; // Decrement Register : [B] <-- [B] - 1
     static constexpr Byte MVI_B_DAT = 0x06; // Move immediate data to Register : [B] <-- data
     static constexpr Byte RLC = 0x07; // Rotate Accumulator left : [An+1] <-- [An], [A0] <-- [A7], [CS] <--[A7]
-    static constexpr Byte STAX_B = 0x08;
+    static constexpr Byte UNDEFINED_1 = 0x08;
     static constexpr Byte DAD_B = 0x09; // Add Register pair to H-L pair : [H-L] <-- [H-L] + [B-C]
     static constexpr Byte LDAX_B = 0x0A; // Load Accumulator Indirect : [A] <-- [[BC]]
     static constexpr Byte DCX_B = 0x0B; // Decrement Register pair : [BC] <-- [BC] - 1
@@ -26,7 +26,7 @@ public:
     static constexpr Byte MVI_C_DAT = 0x0E; // Move immediate data to Register : [C] <-- data
     static constexpr Byte RRC = 0x0F; // Rotate Accumulator right : [An] <-- [An+1], [CS] <-- [A0], [An] <-- [An+1]
 
-    static constexpr Byte STAX_B = 0x10;
+    static constexpr Byte UNDEFINED_2 = 0x10;
     static constexpr Byte LXI_D = 0x11; // Load Register pair immediate : [DE] <-- data 16 bits, [rh] <-- 8 LSBs of data
     static constexpr Byte STAX_D = 0x12; // Store Accumulator Indirect : [[DE]] <-- [A]
     static constexpr Byte INX_D = 0x13; // Increment Register pair : [DE] <-- [DE] + 1
@@ -34,7 +34,7 @@ public:
     static constexpr Byte DCR_D = 0x15; // Decrement Register : [D] <-- [D] - 1
     static constexpr Byte MVI_D_DAT = 0x16; // Move immediate data to Register : [D] <-- data
     static constexpr Byte RAL = 0x17; // Rotate Accumulator left through carry : [An+1] <-- [An], [CS] <-- [A7], [A0] <-- [CS]
-    static constexpr Byte STAX_B = 0x18;
+    static constexpr Byte UNDEFINED_3 = 0x18;
     static constexpr Byte DAD_D = 0x19; // Add Register pair to H-L pair : [H-L] <-- [H-L] + [D-E]
     static constexpr Byte LDAX_D = 0x1A; // Load Accumulator Indirect : [A] <-- [[DE]]
     static constexpr Byte DCX_D = 0x1B; // Decrement Register pair : [DE] <-- [DE] - 1
@@ -51,7 +51,7 @@ public:
     static constexpr Byte DCR_H = 0x25; // Decrement Register : [H] <-- [H] - 1
     static constexpr Byte MVI_H_DAT = 0x26; // Move immediate data to Register : [H] <-- data
     static constexpr Byte DAA = 0x27; // Decimal adjust Accumulator
-    static constexpr Byte STAX_B = 0x28;
+    static constexpr Byte UNDEFINED_4 = 0x28;
     static constexpr Byte DAD_H = 0x29; // Add Register pair to H-L pair : [H-L] <-- [H-L] + [H-L]
     static constexpr Byte LHLD_ADDR = 0x2A; // Load H-L pair Direct : [L] <-- Memory[addr], [H] <-- [addr+1]
     static constexpr Byte DCX_H = 0x2B; // Decrement Register pair : [HL] <-- [HL] - 1
@@ -68,7 +68,7 @@ public:
     static constexpr Byte DCR_M = 0x35; // Decrement value in Memory : [[H-L]] <-- [[H-L]] - 1
     static constexpr Byte MVI_M_DAT = 0x36; // Move immediate data to Memory : [M] <-- data
     static constexpr Byte STC = 0x37; // Set carry status : [CS] <-- 1
-    static constexpr Byte STAX_B = 0x38;
+    static constexpr Byte UNDEFINED_5 = 0x38;
     static constexpr Byte DAD_SP = 0x39; // ?????????
     static constexpr Byte LDA_ADDR = 0x3A; // Load Accumulator Direct : [A] <-- Memory[addr]
     static constexpr Byte DCX_SP = 0x3B; // ?????????
@@ -224,7 +224,7 @@ public:
     static constexpr Byte RZ = 0xC8; // ?????????
     static constexpr Byte RET = 0xC9; // Return from subroutine : [PC] <-- Return_Address, SP <-- [SP] + 2 (?)
     static constexpr Byte JZ_ADDR = 0xCA; // Jump if Z == 0
-    static constexpr Byte STAX_B = 0xCB;
+    static constexpr Byte UNDEFINED_6 = 0xCB;
     static constexpr Byte CZ_LABEL = 0xCC; // ?????????
     static constexpr Byte CALL_LABEL = 0xCD; // Unconditional subroutine call : Return_Address <-- [PC+1], [SP] <-- [SP] - 2, [PC] <-- Address/Label
     static constexpr Byte ACI_DAT = 0xCE; // Add with carry immediate data to Accumulator : [A] <-- [A] + data + [CS]
@@ -239,11 +239,11 @@ public:
     static constexpr Byte SUI_DAT = 0xD6; // Subtract immediate data from Accumulator : [A] <-- [A] – data
     static constexpr Byte RST_2 = 0xD7; // One-word CALL instruction : [PC] <-- memory[SP], [PC] <-- Restart_Location (?)
     static constexpr Byte RC = 0xD8; // ????????
-    static constexpr Byte STAX_B = 0xD9;
+    static constexpr Byte UNDEFINED_7 = 0xD9;
     static constexpr Byte JC_ADDR = 0xDA; // Jump if C == 1
     static constexpr Byte IN_PORT = 0xDB; // Input to Accumulator from I/O port : [A] <-- [Port]
     static constexpr Byte CC_ADDR = 0xDC; // ???????
-    static constexpr Byte STAX_B = 0xDD;
+    static constexpr Byte UNDEFINED_8 = 0xDD;
     static constexpr Byte SBI_DAT = 0xDE; // Subtract immediate data from Accumulator with borrow : [A] <-- [A] – data - [CS]
     static constexpr Byte RST_3 = 0xDF; // One-word CALL instruction : [PC] <-- memory[SP], [PC] <-- Restart_Location (?)
     
@@ -260,24 +260,24 @@ public:
     static constexpr Byte JPE_ADDR = 0xEA; // Jump if even parity 
     static constexpr Byte XCHG = 0xEB; // Exchange data between H-L and D-E pairs : [H-L] <-> [D-E]
     static constexpr Byte CPE_LABEL = 0xEC; // ???????
-    static constexpr Byte STAX_B = 0xED;
+    static constexpr Byte UNDEFINED_9 = 0xED;
     static constexpr Byte XRI_DAT = 0xEE; // XOR immediate data with Accumulator : [A] <-- [A] V data
     static constexpr Byte RST_5 = 0xEF; // One-word CALL instruction : [PC] <-- memory[SP], [PC] <-- Restart_Location (?)
     
     static constexpr Byte RP = 0xF0; // ?????????
     static constexpr Byte POP_PSW = 0xF1; // Pop Processor Status Word
     static constexpr Byte JP_ADDR = 0xF2; // Jump if S == 0
-    static constexpr Byte DI = 0xF3; // Disable Interrupts
+    static constexpr Byte DI = 0xF3; // Disable Interrupts 
     static constexpr Byte CP_LABEL = 0xF4; // ????????
     static constexpr Byte PUSH_PSW = 0xF5; // Push Processor Status Word
     static constexpr Byte ORI_DAT = 0xF6; // OR immediate data with Accumulator : [A] <-- [A] v data
     static constexpr Byte RST_6 = 0xF7; // One-word CALL instruction : [PC] <-- memory[SP], [PC] <-- Restart_Location (?)
     static constexpr Byte RM = 0xF8; // ?????????
-    static constexpr Byte SPHL = 0xF9; // Move s of H-L pair to SP
+    static constexpr Byte SPHL = 0xF9; // Move contents of HL pair to SP
     static constexpr Byte JM_ADDR = 0xFA; // Jump if S == 1
     static constexpr Byte EI = 0xFB; // Enable Interrupts
     static constexpr Byte CM_LABEL = 0xFC; // ????????
-    static constexpr Byte STAX_B = 0xFD;
+    static constexpr Byte UNDEFINED_10 = 0xFD;
     static constexpr Byte CPI_DAT = 0xFE; // Compare immediate data with Accumulator : [A] -- data
     static constexpr Byte RST_7 = 0xFF; // One-word CALL instruction : [PC] <-- memory[SP], [PC] <-- Restart_Location (?)
 
