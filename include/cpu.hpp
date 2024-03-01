@@ -20,7 +20,7 @@ class CPU {
     Byte Z : 1; // Zero flag
     Byte AC : 1; // Auxiliary Carry flag
     Byte P : 1; // Parity flag
-    Byte CY : 1; // Carry flag
+    Byte CS : 1; // Carry flag
 
     /* Control Signals */
     Byte READY : 1; // Peripheral data transfer => Ready = 1
@@ -62,7 +62,7 @@ class CPU {
         IR = 0x00; // Default reset routine
         SP = 0x0100; // Starting stack from random memory location
         
-        S = Z = AC = P = CY = 0; // Resetting all flags 
+        S = Z = AC = P = CS = 0; // Resetting all flags 
         A = 0; // Resetting Accumulator
 
         memory.Initialize(); // Initializing all memory bits to 0
@@ -99,6 +99,97 @@ class CPU {
         while (cycles > 0) {
             IR = FetchByte( cycles, memory );
             switch( IR ) {
+
+                /* Control Instructions */
+                case OPCODE::NOP: // No operation is performed
+                {
+                    
+                } break;
+                case OPCODE::HLT: // CPU stops further execution - An interrupt or reset is necessary to exit from the halt state.
+                {
+
+                } break;
+                case OPCODE::DI: // Interrupt enable is reset - All interrupts are disabled except TRAP
+                {
+
+                } break;
+                case OPCODE::EI: // Interrupt enable is set - All interrupts are enabled
+                {
+
+                } break;
+                case OPCODE::RIM: // Read status of interrupts 7.5, 6.5, 5.5 and read serial data input bit
+                {
+
+                } break;
+                case OPCODE::SIM: // Implement interrupts 7.5, 6.5, 5.5 and perform serial data output
+                {
+
+                } break;
+                
+
+                /* Logical Instructions */
+                case OPCODE::CMP_A:
+                {
+
+                } break;
+                case OPCODE::CPI_DAT:
+                {
+
+                } break;
+                case OPCODE::ANA_A:
+                {
+
+                } break;
+                case OPCODE::ANI_DAT:
+                {
+
+                } break;
+                case OPCODE::XRA_A:
+                {
+
+                } break;
+                case OPCODE::XRI_DAT:
+                {
+
+                } break;
+                case OPCODE::ORA_A:
+                {
+
+                } break;
+                case OPCODE::ORI_DAT:
+                {
+
+                } break;
+                case OPCODE::RLC:
+                {
+
+                } break;
+                case OPCODE::RRC:
+                {
+
+                } break;
+                case OPCODE::RAL:
+                {
+
+                } break;
+                case OPCODE::RAR:
+                {
+
+                } break;
+                case OPCODE::CMA:
+                {
+
+                } break;
+                case OPCODE::CMC:
+                {
+
+                } break;
+                case OPCODE::STC:
+                {
+
+                } break;
+
+
                 /* Data Transfer Group */
                 case OPCODE::LDA_ADDR:
                 {
@@ -127,24 +218,27 @@ class CPU {
                     memory[Address] = H; // Lower address value gets set to value of H
                     memory[Address + 1] = L; // Higher address value gets set to value of L
                 } break;
+
+
                 /* Arithmetic Group */
-                case OPCODE::INR_R:
+                case OPCODE::INR_A:
                 {
                     // CheckCycles( cycles, 1 ); [No need to fetch location of Accumulator (?)]
                     A += 0b00000001; // Increment Accumulator by 1
                     AccumulatorSetFlags();
                 } break;
-                /* Logical Group */
 
-                /* Branch Group */
+
+                /* Branch Instructions */
                 case OPCODE::JMP_ADDR:
                 {   
                     CheckCycles( cycles, 2 );
                     Word Address = FetchWord( cycles, memory );
                     PC = Address;
                 } break;
-                /* Stack, I/O and Machine Control Group */
 
+
+                /* Invalid Instruction */
                 default:
                     throw InvalidOpcode();
             }
