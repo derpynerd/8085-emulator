@@ -11,9 +11,8 @@ class CPU {
 
     /* Registers */
     Byte A; // Accumulator
-    Word WZ; // Temporary registers
-    Word BC, DE; // Registers
-    Byte H, L;
+    Byte W, Z; // Temporary registers
+    Byte B, C, D, E, H, L; // Registers
 
     /* Flag register */
     Byte S : 1; // Sign flag 
@@ -69,17 +68,15 @@ class CPU {
     }
 
     /* Fetch one Byte from PC */
-    Byte FetchByte( u32& cycles, Memory& memory ) {
+    Byte FetchByte( Memory& memory ) {
         Byte Data = memory[PC++];
-        cycles--;
         return Data;
     }
 
     /* Fetch one Word from PC, PC + 1 */
-    Word FetchWord( u32& cycles, Memory& memory ) {
+    Word FetchWord( Memory& memory ) {
         Byte Low = memory[PC++];
         Byte High = memory[PC++];
-        cycles -= 2;
         return (((Word)High) << 8) | ((Word)Low);
     }
 
@@ -88,26 +85,17 @@ class CPU {
         S = (A & 0b10000000) > 0; // Set Sign flag if 8th bit of A is 1 i.e. A is negative
     }
 
-    /* Check if required number of clock cycles are present to execute instruction */
-    void CheckCycles(u32& cycles, u32 requiredCycles) {
-        if (cycles < requiredCycles) throw OutOfCycles();
-        return;
-    }
-
     /* Fetch -> Decode -> Execute procedure */
-    void Execute( u32 cycles, Memory& memory ) {
-        while (cycles > 0) {
-            IR = FetchByte( cycles, memory );
+    void Execute( Memory& memory ) {
+            IR = FetchByte( memory );
             switch( IR ) {
 
                 /* Control Instructions */
                 case OPCODE::NOP: // No operation is performed
-                {
-                    
-                } break;
+                {} break;
                 case OPCODE::HLT: // CPU stops further execution - An interrupt or reset is necessary to exit from the halt state.
                 {
-
+                    
                 } break;
                 case OPCODE::DI: // Interrupt enable is reset - All interrupts are disabled except TRAP
                 {
@@ -193,28 +181,24 @@ class CPU {
                 /* Data Transfer Group */
                 case OPCODE::LDA_ADDR:
                 {
-                    CheckCycles( cycles, 2 );
-                    Word Address = FetchWord( cycles, memory ); // Fetch value to load into Accumulator
+                    Word Address = FetchWord( memory ); // Fetch value to load into Accumulator
                     A = memory[Address]; 
                     AccumulatorSetFlags();
                 } break;
                 case OPCODE::STA_ADDR:
                 {
-                    CheckCycles( cycles, 2 );
-                    Word Address = FetchWord( cycles, memory ); // Fetch address to store value in
+                    Word Address = FetchWord( memory ); // Fetch address to store value in
                     memory[Address] = A;
                 } break;
                 case OPCODE::LHLD_ADDR:
                 {
-                    CheckCycles( cycles, 2 );
-                    Word Address = FetchWord( cycles, memory );
+                    Word Address = FetchWord( memory );
                     L = memory[Address]; // L set to lower address value
                     H = memory[Address + 1]; // H set to higher address value
                 } break;
                 case OPCODE::SHLD_ADDR:
                 {
-                    CheckCycles( cycles, 2 );
-                    Word Address = FetchWord( cycles, memory ); // Fetch address to store value in
+                    Word Address = FetchWord( memory ); // Fetch address to store value in
                     memory[Address] = H; // Lower address value gets set to value of H
                     memory[Address + 1] = L; // Higher address value gets set to value of L
                 } break;
@@ -223,7 +207,6 @@ class CPU {
                 /* Arithmetic Group */
                 case OPCODE::INR_A:
                 {
-                    // CheckCycles( cycles, 1 ); [No need to fetch location of Accumulator (?)]
                     A += 0b00000001; // Increment Accumulator by 1
                     AccumulatorSetFlags();
                 } break;
@@ -232,8 +215,7 @@ class CPU {
                 /* Branch Instructions */
                 case OPCODE::JMP_ADDR:
                 {   
-                    CheckCycles( cycles, 2 );
-                    Word Address = FetchWord( cycles, memory );
+                    Word Address = FetchWord( memory );
                     PC = Address;
                 } break;
 
@@ -243,7 +225,7 @@ class CPU {
                     throw InvalidOpcode();
             }
 
-        }
+        
         
 
     }

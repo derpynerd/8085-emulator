@@ -50,5 +50,7 @@ Emulating an 8085 processor in C++
 ## Future Plans -
 - Opcode decoder which can read opcodes from a text file and execute them
 - Adding on to above point, syntax checker - proper compiler/interpreter perhaps (?)
-- Plan: what to do about the clock cycle parameter ? 
+- ~~Plan: what to do about the clock cycle parameter ?~~ -> removed cycles as a param
 - Fix: unable to print memory[Addr] values
+- Updated readme will not specify all opcodes (opcode list will be included) 
+    but only specify how exactly the opcodes are implemented here  

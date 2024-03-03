@@ -16,7 +16,7 @@ int main() {
     memory[2] = 0x00;
     
     // end - inline testing program
-    cpu.Execute( 3, memory ); // Execute instruction
+    cpu.Execute( memory ); // Execute instruction
     // cpu.Execute( 3, memory );
 
     return 0;
