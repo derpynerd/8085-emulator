@@ -54,6 +54,9 @@ class CPU {
     Word AD_0_7 : 8; // Input address bus AD0 - AD7
     Word AD_8_15 : 8; // Input address bus AD8 - AD15 
 
+    Byte HALT : 1;
+    Byte InterruptEnable_ : 1;
+
     public:
     /* Reset routine */
     void Reset( Memory& memory ) {
@@ -63,6 +66,8 @@ class CPU {
         
         S = Z = AC = P = CS = 0; // Resetting all flags 
         A = 0; // Resetting Accumulator
+        HALT = 0; // Not in halt state
+        InterruptEnable_ = 1;
 
         memory.Initialize(); // Initializing all memory bits to 0
     }
@@ -86,7 +91,17 @@ class CPU {
     }
 
     /* Fetch -> Decode -> Execute procedure */
-    void Execute( Memory& memory ) {
+        void Execute( Memory& memory ) {
+
+        if (HALT == 1) {
+            if (InterruptEnable_ == 0 && TRAP == 1) {
+                // base implementation
+            }
+
+        }
+
+        else {
+
             IR = FetchByte( memory );
             switch( IR ) {
 
@@ -95,15 +110,15 @@ class CPU {
                 {} break;
                 case OPCODE::HLT: // CPU stops further execution - An interrupt or reset is necessary to exit from the halt state.
                 {
-                    
+                    HALT = 1;
                 } break;
                 case OPCODE::DI: // Interrupt enable is reset - All interrupts are disabled except TRAP
                 {
-
+                    InterruptEnable_ = 0; // reset IE_
                 } break;
                 case OPCODE::EI: // Interrupt enable is set - All interrupts are enabled
                 {
-
+                    InterruptEnable_ = 1; // set IE_
                 } break;
                 case OPCODE::RIM: // Read status of interrupts 7.5, 6.5, 5.5 and read serial data input bit
                 {
@@ -226,7 +241,7 @@ class CPU {
             }
 
         
-        
+        }    
 
     }
 
