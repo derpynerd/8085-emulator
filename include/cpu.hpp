@@ -15,11 +15,11 @@ class CPU {
     Byte B, C, D, E, H, L; // Registers
 
     /* Flag register */
-    Byte S : 1; // Sign flag 
-    Byte Z : 1; // Zero flag
-    Byte AC : 1; // Auxiliary Carry flag
-    Byte P : 1; // Parity flag
-    Byte CS : 1; // Carry flag
+    Byte Sign : 1; // Sign flag 
+    Byte Zero : 1; // Zero flag
+    Byte AuxC : 1; // Auxiliary Carry flag
+    Byte Parity : 1; // Parity flag
+    Byte Carry : 1; // Carry flag
 
     /* Control Signals */
     Byte READY : 1; // Peripheral data transfer => Ready = 1
@@ -64,7 +64,7 @@ class CPU {
         IR = 0x00; // Default reset routine
         SP = 0x0100; // Starting stack from random memory location
         
-        S = Z = AC = P = CS = 0; // Resetting all flags 
+        Sign = Zero = AuxC = Parity = Carry = 0; // Resetting all flags 
         A = 0; // Resetting Accumulator
         HALT = 0; // Not in halt state
         InterruptEnable_ = 1;
@@ -86,8 +86,8 @@ class CPU {
     }
 
     void AccumulatorSetFlags() {
-        Z = (A == 0); // Set Zero flag if A == 0
-        S = (A & 0b10000000) > 0; // Set Sign flag if 8th bit of A is 1 i.e. A is negative
+        Zero = (A == 0); // Set Zero flag if A == 0
+        Sign = (A & 0b10000000) > 0; // Set Sign flag if 8th bit of A is 1 i.e. A is negative
     }
 
     /* Fetch -> Decode -> Execute procedure */
@@ -133,11 +133,14 @@ class CPU {
                 /* Logical Instructions */
                 case OPCODE::CMP_A:
                 {
-
+                    
                 } break;
                 case OPCODE::CPI_DAT:
                 {
-
+                    Byte Value = FetchByte( memory );
+                    if (A < Value) { Carry = 1; Zero = 0; }
+                    else if (A == Value) {Carry = 0; Zero = 1; }
+                    else if (A > Value) {Carry = 0; Zero = 0; }
                 } break;
                 case OPCODE::ANA_A:
                 {
@@ -194,6 +197,12 @@ class CPU {
 
 
                 /* Data Transfer Group */
+                case OPCODE::MVI_A_DAT:
+                {
+                    Byte Value = FetchByte( memory );
+                    A = Value;
+                    AccumulatorSetFlags();
+                } break;
                 case OPCODE::LDA_ADDR:
                 {
                     Word Address = FetchWord( memory ); // Fetch value to load into Accumulator
