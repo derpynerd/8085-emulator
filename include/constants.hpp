@@ -44,7 +44,7 @@ public:
     static constexpr Byte RAR = 0x1F; // Rotate Accumulator right through carry :  [An] <-- [An+1], [CS] <-- [A0], [A7] <-- [CS]
 
     static constexpr Byte RIM = 0x20; // Read Interrupt Masks
-    static constexpr Byte LXI_B = 0x21; // Load Register pair immediate : [HL] <-- data 16 bits, [rh] <-- 8 LSBs of data
+    static constexpr Byte LXI_H = 0x21; // Load Register pair immediate : [HL] <-- data 16 bits, [rh] <-- 8 LSBs of data
     static constexpr Byte SHLD_ADDR = 0x22; // Store H-L pair Direct : Memory[addr] <-- [L], [addr+1] <-- [H] 
     static constexpr Byte INX_H = 0x23; // Increment Register pair : [HL] <-- [HL] + 1
     static constexpr Byte INR_H = 0x24; // Increment Register : [H] <-- [H] + 1
