@@ -11,13 +11,15 @@ int main() {
     cpu.Reset( memory ); // RESET CPU to base state
     // start - inline testing program
     
-    memory[0] = OPCODE::SHLD_ADDR;
-    memory[1] = 0x05;
-    memory[2] = 0x00;
+    memory[0] = OPCODE::MVI_A_DAT;
+    memory[1] = 0x24;
+    memory[2] = OPCODE::CPI_DAT;
+    memory[3] = 0x23;
     
     // end - inline testing program
-    cpu.Execute( memory ); // Execute instruction
-    // cpu.Execute( 3, memory );
+    
+    cpu.Execute( memory );
+    cpu.Execute( memory ); 
 
     return 0;
 }
