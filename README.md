@@ -29,3 +29,4 @@ Emulating an 8085 processor in C++
     - Assembly program for 8085 will be loaded into emulator
     - Assembler/Decoder will take care of parsing opcodes and setting program memory according to parameters passed and number of CPU execute calls required based on number of opcodes decoded
     - Hence allowing for the program to be run seamlessly by simply calling the CPU execute function based on number of opcode count  
+- Decouple CPU functions and Instruction implementations - write functions to call within instructions to use repeated functionality
