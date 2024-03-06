@@ -67,7 +67,7 @@ class CPU {
         Sign = Zero = AuxC = Parity = Carry = 0; // Resetting all flags 
         A = 0; // Resetting Accumulator
         HALT = 0; // Not in halt state
-        InterruptEnable_ = 1;
+        InterruptEnable_ = 0; // Interrupts enabled
 
         memory.Initialize(); // Initializing all memory bits to 0
     }
@@ -90,11 +90,16 @@ class CPU {
         Sign = (A & 0b10000000) > 0; // Set Sign flag if 8th bit of A is 1 i.e. A is negative
     }
 
+    void Jump( Memory& memory ) {
+        Word Address = FetchWord( memory );
+        PC = Address;
+    }
+
     /* Fetch -> Decode -> Execute procedure */
         void Execute( Memory& memory ) {
 
         if (HALT == 1) {
-            if (InterruptEnable_ == 0 && TRAP == 1) {
+            if (InterruptEnable_ == 0 && TRAP == 1) { // ???????
                 // base implementation
             }
 
@@ -196,6 +201,53 @@ class CPU {
                 } break;
 
 
+                /* Branch Instructions */
+                case OPCODE::JMP_ADDR: // testing pending
+                {   
+                    Jump( memory );
+                } break;
+                case OPCODE::JC_ADDR: // testing pending
+                {
+                    if (Carry == 1) { Jump( memory ); }
+                    else { PC++; }
+                } break;
+                case OPCODE::JNC_ADDR: // testing pending
+                {
+                    if (Carry == 0) { Jump( memory ); }
+                    else { PC++; }
+                } break;
+                case OPCODE::JP_ADDR: // testing pending
+                {
+                    if (Sign == 0) { Jump( memory ); }
+                    else { PC++; }
+                } break;
+                case OPCODE::JM_ADDR: // testing pending
+                {
+                    if (Sign == 1) { Jump( memory ); }
+                    else { PC++; }
+                } break;
+                case OPCODE::JZ_ADDR: // testing pending
+                {
+                    if (Zero == 1) { Jump( memory ); }
+                    else { PC++; }
+                } break;
+                case OPCODE::JNZ_ADDR: // testing pending
+                {
+                    if (Zero == 0) { Jump( memory ); }
+                    else { PC++; }
+                } break;
+                case OPCODE::JPE_ADDR: // testing pending
+                {
+                    if (Parity == 1) { Jump( memory ); }
+                    else { PC++; }
+                } break;
+                case OPCODE::JPO_ADDR: // testing pending
+                {
+                    if (Parity == 0) { Jump( memory ); }
+                    else { PC++; }
+                } break;
+
+
                 /* Data Transfer Group */
                 case OPCODE::MVI_A_DAT:
                 {
@@ -209,10 +261,12 @@ class CPU {
                     A = memory[Address]; 
                     AccumulatorSetFlags();
                 } break;
-                case OPCODE::STA_ADDR:
+                case OPCODE::LXI_B: // testing pending
                 {
-                    Word Address = FetchWord( memory ); // Fetch address to store value in
-                    memory[Address] = A;
+                    Byte High = FetchByte( memory );
+                    Byte Low = FetchByte( memory );
+                    B = memory[High];
+                    C = memory[Low]; // ================
                 } break;
                 case OPCODE::LHLD_ADDR:
                 {
@@ -220,13 +274,22 @@ class CPU {
                     L = memory[Address]; // L set to lower address value
                     H = memory[Address + 1]; // H set to higher address value
                 } break;
+                case OPCODE::STA_ADDR:
+                {
+                    Word Address = FetchWord( memory ); // Fetch address to store value in
+                    memory[Address] = A;
+                } break;
                 case OPCODE::SHLD_ADDR:
                 {
                     Word Address = FetchWord( memory ); // Fetch address to store value in
                     memory[Address] = H; // Lower address value gets set to value of H
                     memory[Address + 1] = L; // Higher address value gets set to value of L
                 } break;
-
+                case OPCODE::XCHG: // testing pending
+                {
+                    std::swap(H, D);
+                    std::swap(L, E); // ==================
+                } break;
 
                 /* Arithmetic Group */
                 case OPCODE::INR_A:
@@ -234,13 +297,29 @@ class CPU {
                     A += 0b00000001; // Increment Accumulator by 1
                     AccumulatorSetFlags();
                 } break;
-
-
-                /* Branch Instructions */
-                case OPCODE::JMP_ADDR:
-                {   
-                    Word Address = FetchWord( memory );
-                    PC = Address;
+                case OPCODE::INR_B:
+                {
+                    B += 0b00000001; // Increment Register B by 1
+                } break;
+                case OPCODE::INR_C:
+                {
+                    C += 0b00000001; // Increment Register C by 1
+                } break;
+                case OPCODE::INR_D:
+                {
+                    D += 0b00000001; // Increment Register D by 1
+                } break;
+                case OPCODE::INR_E:
+                {
+                    E += 0b00000001; // Increment Register E by 1
+                } break;
+                case OPCODE::INR_H:
+                {
+                    H += 0b00000001; // Increment Register H by 1
+                } break;
+                case OPCODE::INR_L:
+                {
+                    L += 0b00000001; // Increment Register L by 1
                 } break;
 
 
